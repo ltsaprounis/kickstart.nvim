@@ -67,6 +67,8 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
+  -- Plugins
+
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
@@ -283,7 +285,22 @@ require('lazy').setup({
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
+  {
+    -- Nice colourscheme
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    -- require("tokyonight").load()
+  },
+
+  {
+    'github/copilot.vim'
+  }
 }, {})
+
+-- To avoid the copilot issue <Tab> map has been disabled or is claimed by another plugin.
+vim.g.copilot_assume_mapped = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -586,9 +603,14 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {}, -- C and C++
   -- gopls = {},
-  -- pyright = {},
+  pyright = {},
+  cmake = {},
+  marksman = {}, -- Markdown
+  r_language_server = {},
+  taplo = {}, -- toml
+  hydra_lsp = {}, --yaml
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
