@@ -294,10 +294,37 @@ require('lazy').setup({
     -- require("tokyonight").load()
   },
 
+  -- Github Copilot
   {
     'github/copilot.vim'
-  }
+  },
+
+  -- Neogen for automatic docstrings
+  {
+    "danymat/neogen",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = true,
+    -- Uncomment next line if you want to follow only stable versions
+    -- version = "*" 
+    -- snippet_engine = "luasnip",
+    -- enabled = true,
+    -- configure python to use numpydoc
+  },
+
 }, {})
+
+-- Configure neogen
+require('neogen').setup {
+  enabled = true,
+  snippet_engine = "luasnip",
+  languages = {
+    python = {
+      template = {
+        annotation_convention = "numpydoc",
+      }
+    }
+  }
+}
 
 -- To avoid the copilot issue <Tab> map has been disabled or is claimed by another plugin.
 vim.g.copilot_assume_mapped = true
