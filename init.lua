@@ -311,6 +311,14 @@ require('lazy').setup({
     -- configure python to use numpydoc
   },
 
+  -- Markdown Preview
+  {
+      "iamcco/markdown-preview.nvim",
+      cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+      ft = { "markdown" },
+      build = function() vim.fn["mkdp#util#install"]() end,
+  },
+
 }, {})
 
 -- Configure neogen
