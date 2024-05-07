@@ -739,6 +739,7 @@ cmp.setup {
 
 -- Set ruler at column 88
 vim.api.nvim_command('set colorcolumn=88')
+vim.opt.relativenumber = true
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
