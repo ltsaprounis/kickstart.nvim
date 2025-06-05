@@ -295,9 +295,9 @@ require('lazy').setup({
   },
 
   -- Github Copilot
-  {
-    'github/copilot.vim'
-  },
+  -- {
+  --   'github/copilot.vim'
+  -- },
 
   -- Neogen for automatic docstrings
   {
@@ -319,6 +319,24 @@ require('lazy').setup({
       build = function() vim.fn["mkdp#util#install"]() end,
   },
 
+  -- Neovim games.
+  {
+    "alec-gibson/nvim-tetris"
+  },
+
+  --yaml LSP
+  {
+    "someone-stole-my-name/yaml-companion.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-lua/plenary.nvim",
+      "vim-telescope/telescope.nvim"
+    },
+    config = function()
+        require("telescope").load_extension("yaml_schema")
+      end
+  }
+
 }, {})
 
 -- Configure neogen
@@ -335,7 +353,7 @@ require('neogen').setup {
 }
 
 -- To avoid the copilot issue <Tab> map has been disabled or is claimed by another plugin.
-vim.g.copilot_assume_mapped = true
+-- vim.g.copilot_assume_mapped = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -645,7 +663,8 @@ local servers = {
   marksman = {}, -- Markdown
   r_language_server = {},
   taplo = {}, -- toml
-  hydra_lsp = {}, --yaml
+  -- hydra_lsp = {}, --yaml
+  yamlls = {filetypes = { 'yml', 'yaml' } }, --yaml
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
@@ -684,6 +703,36 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+-- I couldn't get the yaml-companion to work, so I'm using the lspconfig directly
+-- configure yaml LSP 
+-- local cfg = require("yaml-companion").setup({
+--   schemas = {
+--     {
+--       name = "Databricks Asset Bundles",
+--       uri = os.getenv("HOME") .. "/.config/nvim/bundle_config_schema.json",
+--     }
+--   },
+-- 
+--   lspconfig = {
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+--     settings = {
+--       yaml = {
+--         validate = true,
+--         -- format = { enable = true },
+--         schemaStore = {
+--             url = "https://www.schemastore.org/api/json/catalog.json",
+--             enable = true,
+--         },
+--         hover = true,
+--         schemas = {[os.getenv("HOME") .. "/.config/nvim/bundle_config_schema.json"] = "databricks.yml"},
+--       },
+--     },
+--   },
+-- })
+-- require("lspconfig")["yamlls"].setup(cfg)
+
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -743,3 +792,4 @@ vim.opt.relativenumber = true
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
