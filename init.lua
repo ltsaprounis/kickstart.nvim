@@ -85,8 +85,12 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
+       { 'mason-org/mason.nvim', opts = {} },
+      'mason-org/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      -- Old repo
+      -- { 'williamboman/mason.nvim', config = true },
+      -- 'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -253,12 +257,7 @@ require('lazy').setup({
       -- requirements installed.
       {
         'nvim-telescope/telescope-fzf-native.nvim',
-        -- NOTE: If you are having trouble with this installation,
-        --       refer to the README for telescope-fzf-native for more instructions.
-        build = 'make',
-        cond = function()
-          return vim.fn.executable 'make' == 1
-        end,
+        build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'
       },
     },
   },
@@ -324,18 +323,18 @@ require('lazy').setup({
     "alec-gibson/nvim-tetris"
   },
 
-  --yaml LSP
-  {
-    "someone-stole-my-name/yaml-companion.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-lua/plenary.nvim",
-      "vim-telescope/telescope.nvim"
-    },
-    config = function()
-        require("telescope").load_extension("yaml_schema")
-      end
-  }
+  -- --yaml LSP
+  -- {
+  --   "someone-stole-my-name/yaml-companion.nvim",
+  --   dependencies = {
+  --     "neovim/nvim-lspconfig",
+  --     "nvim-lua/plenary.nvim",
+  --     "vim-telescope/telescope.nvim"
+  --   },
+  --   config = function()
+  --       require("telescope").load_extension("yaml_schema")
+  --     end
+  -- }
 
 }, {})
 
@@ -686,22 +685,57 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
--- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
+-- ### OLD MASON API changed in v2 ###
+-- -- Ensure the servers above are installed
+-- local mason_lspconfig = require 'mason-lspconfig'
+-- mason_lspconfig.setup {
+--   ensure_installed = vim.tbl_keys(servers),
+-- }
+-- 
+-- mason_lspconfig.setup_handlers {
+--   function(server_name)
+--     require('lspconfig')[server_name].setup {
+--       capabilities = capabilities,
+--       on_attach = on_attach,
+--       settings = servers[server_name],
+--       filetypes = (servers[server_name] or {}).filetypes,
+--     }
+--   end,
+-- }
+-- ### OLD MASON API changed in v2 ###
 
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
+-- Ensure the servers and tools above are installed
+--
+-- To check the current status of installed tools and/or manually install
+-- other tools, you can run
+--    :Mason
+--
+-- You can press `g?` for help in this menu.
+--
+-- `mason` had to be setup earlier: to configure its options see the
+-- `dependencies` table for `nvim-lspconfig` above.
+--
+-- You can add other tools here that you want Mason to install
+-- for you, so that they are available from within Neovim.
+local ensure_installed = vim.tbl_keys(servers or {})
+vim.list_extend(ensure_installed, {
+  'stylua', -- Used to format Lua code
+})
+require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
+require('mason-lspconfig').setup {
+  ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+  automatic_installation = false,
+  handlers = {
+    function(server_name)
+      local server = servers[server_name] or {}
+      -- This handles overriding only values explicitly passed
+      -- by the server configuration above. Useful when disabling
+      -- certain features of an LSP (for example, turning off formatting for ts_ls)
+      server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+      require('lspconfig')[server_name].setup(server)
+    end,
+  },
 }
 
 -- I couldn't get the yaml-companion to work, so I'm using the lspconfig directly
