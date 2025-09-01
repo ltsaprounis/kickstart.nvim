@@ -660,7 +660,7 @@ local servers = {
   pyright = {},
   cmake = {},
   marksman = {}, -- Markdown
-  r_language_server = {},
+  -- r_language_server = {},
   taplo = {}, -- toml
   -- hydra_lsp = {}, --yaml
   yamlls = {filetypes = { 'yml', 'yaml' } }, --yaml
