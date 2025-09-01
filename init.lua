@@ -336,6 +336,8 @@ require('lazy').setup({
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
+
+  -- Personal config
   {
     -- Nice colourscheme
     'folke/tokyonight.nvim',
@@ -374,22 +376,8 @@ require('lazy').setup({
   {
     "alec-gibson/nvim-tetris"
   },
-
-  -- --yaml LSP
-  -- {
-  --   "someone-stole-my-name/yaml-companion.nvim",
-  --   dependencies = {
-  --     "neovim/nvim-lspconfig",
-  --     "nvim-lua/plenary.nvim",
-  --     "vim-telescope/telescope.nvim"
-  --   },
-  --   config = function()
-  --       require("telescope").load_extension("yaml_schema")
-  --     end
-  -- }
-
 }, {})
-
+-- Personal config
 -- Configure neogen
 require('neogen').setup {
   enabled = true,
@@ -706,6 +694,7 @@ require('mason-lspconfig').setup()
 --
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
+--  Personal config
 local servers = {
   clangd = {}, -- C and C++
   -- gopls = {},
@@ -736,25 +725,6 @@ require('neodev').setup()
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
--- ### OLD MASON API changed in v2 ###
--- -- Ensure the servers above are installed
--- local mason_lspconfig = require 'mason-lspconfig'
--- mason_lspconfig.setup {
---   ensure_installed = vim.tbl_keys(servers),
--- }
--- 
--- mason_lspconfig.setup_handlers {
---   function(server_name)
---     require('lspconfig')[server_name].setup {
---       capabilities = capabilities,
---       on_attach = on_attach,
---       settings = servers[server_name],
---       filetypes = (servers[server_name] or {}).filetypes,
---     }
---   end,
--- }
--- ### OLD MASON API changed in v2 ###
 
 -- Ensure the servers and tools above are installed
 --
@@ -789,36 +759,6 @@ require('mason-lspconfig').setup {
     end,
   },
 }
-
--- I couldn't get the yaml-companion to work, so I'm using the lspconfig directly
--- configure yaml LSP 
--- local cfg = require("yaml-companion").setup({
---   schemas = {
---     {
---       name = "Databricks Asset Bundles",
---       uri = os.getenv("HOME") .. "/.config/nvim/bundle_config_schema.json",
---     }
---   },
--- 
---   lspconfig = {
---     on_attach = on_attach,
---     capabilities = capabilities,
---     settings = {
---       yaml = {
---         validate = true,
---         -- format = { enable = true },
---         schemaStore = {
---             url = "https://www.schemastore.org/api/json/catalog.json",
---             enable = true,
---         },
---         hover = true,
---         schemas = {[os.getenv("HOME") .. "/.config/nvim/bundle_config_schema.json"] = "databricks.yml"},
---       },
---     },
---   },
--- })
--- require("lspconfig")["yamlls"].setup(cfg)
-
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -872,6 +812,7 @@ cmp.setup {
   },
 }
 
+-- Personal config
 -- Set ruler at column 88
 vim.api.nvim_command('set colorcolumn=88')
 vim.opt.relativenumber = true
