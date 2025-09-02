@@ -27,6 +27,8 @@ return {
   },
 
   -- Markdown Preview
+  -- If markdown preview doesn't work have a look at this issue:
+  -- https://github.com/iamcco/markdown-preview.nvim/issues/695
   {
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
